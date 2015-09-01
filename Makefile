@@ -7,10 +7,12 @@
 #
 # Output directors to store intermediate compiled files
 # relative to the project directory
+SDK_BASE ?= /Volumes/case-sensitive/esp-open-sdk/sdk
+SDK_TOOLS_PATH ?= $(SDK_BASE)/../xtensa-lx106-elf/bin
+
 BUILD_BASE	= build
 FW_BASE = firmware
-ESPTOOL = tools/esptool.py
-
+ESPTOOL = export PATH=$(SDK_TOOLS_PATH):$$PATH; tools/esptool.py
 
 # name for the target project
 TARGET		= app
@@ -73,12 +75,12 @@ else
 		SDK_BASE	?= /esptools/esp-open-sdk/sdk
 
 	CCFLAGS += -Os -ffunction-sections -fno-jump-tables
-	AR = xtensa-lx106-elf-ar
-	CC = xtensa-lx106-elf-gcc
-	LD = xtensa-lx106-elf-gcc
-	NM = xtensa-lx106-elf-nm
-	CPP = xtensa-lx106-elf-cpp
-	OBJCOPY = xtensa-lx106-elf-objcopy
+	AR = $(SDK_TOOLS_PATH)/xtensa-lx106-elf-ar
+	CC = $(SDK_TOOLS_PATH)/xtensa-lx106-elf-gcc
+	LD = $(SDK_TOOLS_PATH)/xtensa-lx106-elf-gcc
+	NM = $(SDK_TOOLS_PATH)/xtensa-lx106-elf-nm
+	CPP = $(SDK_TOOLS_PATH)/xtensa-lx106-elf-cpp
+	OBJCOPY = $(SDK_TOOLS_PATH)/xtensa-lx106-elf-objcopy
     UNAME_S := $(shell uname -s)
 
     ifeq ($(UNAME_S),Linux)
@@ -176,6 +178,8 @@ endef
 .PHONY: all checkdirs clean
 
 all: checkdirs $(TARGET_OUT) $(FW_FILE_1) $(FW_FILE_2)
+
+print-%  : ; @echo $* = $($*)
 
 $(FW_FILE_1): $(TARGET_OUT)
 	$(vecho) "FW $@"
