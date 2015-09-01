@@ -10,6 +10,9 @@
 SDK_BASE ?= /Volumes/case-sensitive/esp-open-sdk/sdk
 SDK_TOOLS_PATH ?= $(SDK_BASE)/../xtensa-lx106-elf/bin
 
+FLAVOR ?= debug
+FLAVOR ?= release
+
 BUILD_BASE	= build
 FW_BASE = firmware
 ESPTOOL = export PATH=$(SDK_TOOLS_PATH):$$PATH; tools/esptool.py
@@ -24,12 +27,6 @@ LD_SCRIPT	= eagle.app.v6.ld
 # these are the names and options to generate them
 FW_1	= 0x00000
 FW_2	= 0x40000
-
-ifndef FLAVOR
-	FLAVOR = release
-else
-	FLAVOR = $(FLAVOR)
-endif
 
 
 #############################################################
@@ -178,6 +175,7 @@ endef
 .PHONY: all checkdirs clean
 
 all: checkdirs $(TARGET_OUT) $(FW_FILE_1) $(FW_FILE_2)
+	@echo "Flavor: $(FLAVOR)"
 
 print-%  : ; @echo $* = $($*)
 
